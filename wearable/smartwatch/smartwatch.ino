@@ -59,7 +59,7 @@ const int PIN_LED_RED   = 6;
 
 PulseOximeter pox;
 
-const LEDCurrent IR_LED_CURRENT = MAX30100_LED_CURR_14_2MA;
+const LEDCurrent IR_LED_CURRENT = MAX30100_LED_CURR_27_1MA;
 
 bool sensorPresent = false;
 const int SENSOR_MAX_ATTEMPTS = 10;
