@@ -39,7 +39,7 @@ SITE_AREA_VERTICES_M: tuple[tuple[float, float], ...] = (
 
 
 RESTRICTED_AREAS_RAW: tuple[dict[str, tuple[float, float]], ...] = (
-    {"center_m": (0.3, 0.03), "size_m": (0.4, 0.3)},
+    {"center_m": (0.45, 0.45), "size_m": (0.4, 0.3)},
 )
 
 
