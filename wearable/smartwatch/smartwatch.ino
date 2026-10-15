@@ -7,9 +7,6 @@
  *   MAX30100 : VIN=3V3, GND, SDA=A4, SCL=A5
  *   Vibrazione=D2, pulsante=D3, LED blu=D4, verde=D5, rosso=D6
  *
- * Il motore di vibrazione deve essere pilotato tramite transistor NPN con
- * diodo di ricircolo; non deve essere collegato direttamente al pin D2.
- *
  * Funzioni principali:
  * - monitoraggio di frequenza cardiaca e SpO2 con filtraggio dei campioni;
  * - macchina a stati finiti per missione, verifica, allarme e guasto;
