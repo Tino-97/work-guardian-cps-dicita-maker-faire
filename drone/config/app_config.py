@@ -245,10 +245,10 @@ class SmartwatchThresholdsConfig:
     # servono solo a disegnarle nei grafici biometrici e a colorare di rosso i
     # valori fuori soglia nel pannello dell'orologio. Se cambiano lì, vanno
     # cambiate anche qui: test_smartwatch_thresholds.py lo controlla.
-    bpm_min_in: int = 30
+    bpm_min_in: int = 50
     bpm_max_in: int = 120
     spo2_min_in: int = 92
-    bpm_min_out: int = 40
+    bpm_min_out: int = 55
     bpm_max_out: int = 115
     spo2_min_out: int = 94
 
