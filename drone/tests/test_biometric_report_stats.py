@@ -88,7 +88,7 @@ def test_a_sample_is_out_of_band_on_the_rounded_value_like_the_firmware():
     # diventano 120, dentro la soglia massima di ingresso
     assert not sample_hr_out_of_band({"bpm": 120.0, "hr_filtrato": 120.4}, _SOGLIE)
     assert sample_hr_out_of_band({"bpm": 121.0, "hr_filtrato": 120.6}, _SOGLIE)
-    assert not sample_hr_out_of_band({"bpm": 30.0, "hr_filtrato": 29.6}, _SOGLIE)
+    assert not sample_hr_out_of_band({"bpm": 50.0, "hr_filtrato": 49.6}, _SOGLIE)
     assert not sample_spo2_out_of_band({"spo2": 92.0, "spo2_filtrato": 91.6}, _SOGLIE)
     assert sample_spo2_out_of_band({"spo2": 91.0, "spo2_filtrato": 91.4}, _SOGLIE)
     assert not sample_hr_out_of_band({"bpm": None, "hr_filtrato": None}, _SOGLIE)
