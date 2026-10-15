@@ -153,11 +153,11 @@ const char*   noticeLine2   = "";
 unsigned long noticeStartMs = 0;
 
 // ==================== Soglie biometriche ====================
-const int BPM_MIN_IN  = 30;
+const int BPM_MIN_IN  = 50;
 const int BPM_MAX_IN  = 120;
 const int SPO2_MIN_IN = 92;
 
-const int BPM_MIN_OUT  = 40;
+const int BPM_MIN_OUT  = 55;
 const int BPM_MAX_OUT  = 115;
 const int SPO2_MIN_OUT = 94;
 
