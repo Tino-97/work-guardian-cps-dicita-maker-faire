@@ -4,24 +4,26 @@
 
 # Work-Guardian
 
-**Work-Guardian** è un **Cyber-Physical-Human System (CPHS)** per la sicurezza nei cantieri con lavorazioni in quota. Il sistema integra un **drone DJI Tello**, uno **smartwatch biometrico** e una **stazione centrale** per monitorare l'ambiente e l'operatore, rilevare situazioni di rischio e inviare segnalazioni in tempo reale.
+**Work-Guardian** è un Cyber-Physical-Human System (CPHS) per la sicurezza nei cantieri con lavorazioni in quota. Il sistema integra un drone DJI Tello EDU, uno smartwatch biometrico e una stazione centrale per monitorare l'ambiente e l'operatore, rilevare situazioni di rischio e inviare segnalazioni in tempo reale.
 
-Progetto sviluppato per il corso di **Cyber Physical Systems** dell'**Università degli Studi Roma Tre**, A.A. **2025/2026**.
+Progetto sviluppato per il corso di Cyber Physical Systems dell'Università degli Studi Roma Tre, A.A. 2025/2026.
 
 ## Funzionalità principali
 
-- monitoraggio dell'area di lavoro tramite il flusso video del drone;
-- riconoscimento di situazioni di rischio mediante modelli **YOLO**;
-- acquisizione di **frequenza cardiaca** e **SpO₂** tramite smartwatch;
-- comunicazione tra stazione centrale e wearable tramite **MQTT**;
-- segnalazione degli allarmi al supervisore e all'operatore.
+- volo autonomo del drone lungo un percorso a waypoint, con localizzazione tramite marker AprilTag e filtro di Kalman;
+- soste di supervisione nei punti previsti dal percorso, durante le quali modelli YOLO analizzano le immagini della camera;
+- verifica dei dispositivi di protezione individuale dell'operatore: elmetto, occhiali, gilet e scarpe antinfortunistiche;
+- verifica della presenza delle reti di sicurezza;
+- rilevamento degli ingressi nelle aree interdette e delle cadute;
+- misura di frequenza cardiaca e SpO₂ tramite smartwatch, con allarme in caso di valori anomali;
+- segnalazione degli allarmi al supervisore sulla stazione centrale e all'operatore tramite display, LED e vibrazione dello smartwatch.
 
 ## Architettura
 
 ```mermaid
 flowchart LR
-    D[DJI Tello] -->|Video / Wi-Fi| PC[Stazione centrale]
-    W[Smartwatch] <-->|MQTT / Wi-Fi| B[Broker Mosquitto]
+    D[DJI Tello EDU] <-->|video e comandi di volo| PC[Stazione centrale]
+    W[Smartwatch] <-->|dati biometrici e allarmi| B[Broker Mosquitto]
     B <--> PC
 
     PC --> V[Visione artificiale]
@@ -29,17 +31,16 @@ flowchart LR
     S --> B
 ```
 
-Il **drone** fornisce il flusso video alla stazione centrale, dove vengono eseguiti i modelli di visione artificiale. Lo **smartwatch** acquisisce i parametri biometrici dell'operatore e comunica con il PC attraverso il broker MQTT. La stazione centrale integra le informazioni e gestisce gli eventi di rischio e gli allarmi.
+Il drone invia il flusso video alla stazione centrale, che ne calcola la posizione, lo guida lungo il percorso ed esegue i modelli di visione artificiale. Lo smartwatch misura i parametri biometrici dell'operatore e scambia messaggi con la stazione centrale attraverso il broker. La stazione centrale integra le informazioni e gestisce gli eventi di rischio e gli allarmi.
 
 ## Componenti
 
 | Componente | Funzione |
 |---|---|
-| **DJI Tello** | Acquisizione video e monitoraggio dell'area di lavoro |
-| **Computer vision** | Rilevamento di condizioni ed elementi rilevanti per la sicurezza |
-| **Smartwatch biometrico** | Acquisizione dei parametri biometrici e ricezione degli allarmi |
-| **Stazione centrale** | Elaborazione dei dati, supervisione e gestione degli eventi |
-| **Mosquitto / MQTT** | Comunicazione tra PC e wearable |
+| **DJI Tello EDU** | Volo lungo il percorso e acquisizione delle immagini dell'area di lavoro |
+| **Smartwatch biometrico** | Arduino Nano ESP32 con sensore MAX30100: misura dei parametri biometrici e segnalazione degli allarmi all'operatore |
+| **Stazione centrale** | PC che guida il drone, esegue i modelli di visione artificiale e gestisce gli allarmi |
+| **Mosquitto / MQTT** | Comunicazione tra stazione centrale e smartwatch |
 
 ## Struttura della repository
 
@@ -53,13 +54,11 @@ work-guardian-cps-dicita/
 └── README.md
 ```
 
-La documentazione specifica delle singole componenti è contenuta nelle rispettive directory.
-
-## Tecnologie
-
-**Python** · **DJI Tello** · **OpenCV** · **Ultralytics YOLO** · **PyTorch** · **Arduino Nano ESP32** · **MAX30100** · **MQTT** · **Eclipse Mosquitto**
+La documentazione specifica dei singoli componenti è contenuta nelle rispettive cartelle.
 
 ## Avvio rapido
+
+Per volare servono il drone DJI Tello EDU, che si collega alla stazione centrale tramite il proprio Wi-Fi, e un controller PS4. Lo smartwatch e il broker Mosquitto servono per il monitoraggio biometrico e per gli allarmi all'operatore.
 
 Clonare la repository e installare le dipendenze Python:
 
@@ -69,7 +68,7 @@ cd work-guardian-cps-dicita
 pip install -r requirements.txt
 ```
 
-Configurare quindi la rete e il broker MQTT seguendo la documentazione in [`communication/docs/communication_setup.md`](communication/docs/communication_setup.md), quindi avviare l'applicazione principale:
+Configurare la rete e il broker MQTT seguendo la documentazione in [`communication/docs/communication_setup.md`](communication/docs/communication_setup.md), poi avviare l'applicazione principale:
 
 ```bash
 python drone/main.py
