@@ -10,13 +10,13 @@ Progetto sviluppato per il corso di Cyber Physical Systems dell'Università degl
 
 ## Funzionalità principali
 
-- volo autonomo del drone lungo un percorso a waypoint, con localizzazione tramite marker AprilTag e filtro di Kalman;
-- soste di supervisione nei punti previsti dal percorso, durante le quali modelli YOLO analizzano le immagini della camera;
-- verifica dei dispositivi di protezione individuale dell'operatore: elmetto, occhiali, gilet e scarpe antinfortunistiche;
-- verifica della presenza delle reti di sicurezza;
-- rilevamento degli ingressi nelle aree interdette e delle cadute;
-- misura di frequenza cardiaca e SpO₂ tramite smartwatch, con allarme in caso di valori anomali;
-- segnalazione degli allarmi al supervisore sulla stazione centrale e all'operatore tramite display, LED e vibrazione dello smartwatch.
+- il drone vola in autonomia lungo un percorso a waypoint, guidato dalla posizione che la stazione centrale ricava dai marker AprilTag e stabilizza con un filtro di Kalman;
+- nei punti di supervisione il drone si ferma e i modelli YOLO analizzano le immagini della camera;
+- il sistema verifica che l'operatore indossi elmetto, occhiali, gilet e scarpe antinfortunistiche;
+- il sistema controlla la presenza delle reti di sicurezza;
+- il sistema rileva gli ingressi nelle aree interdette e le cadute;
+- lo smartwatch misura frequenza cardiaca e SpO₂ e segnala i valori anomali;
+- gli allarmi compaiono sullo schermo della stazione centrale, dove li vede il supervisore; quelli che riguardano l'operatore arrivano anche allo smartwatch, che li segnala con display, LED e vibrazione.
 
 ## Architettura
 
@@ -31,7 +31,7 @@ flowchart LR
     S --> B
 ```
 
-Il drone invia il flusso video alla stazione centrale, che ne calcola la posizione, lo guida lungo il percorso ed esegue i modelli di visione artificiale. Lo smartwatch misura i parametri biometrici dell'operatore e scambia messaggi con la stazione centrale attraverso il broker. La stazione centrale integra le informazioni e gestisce gli eventi di rischio e gli allarmi.
+Il drone trasmette alla stazione centrale il video della camera e riceve da essa i comandi di volo. La stazione analizza le immagini con i modelli di visione artificiale e, quando rileva una situazione di rischio, genera un allarme. Attraverso il broker, lo smartwatch invia alla stazione i parametri biometrici dell'operatore e riceve gli allarmi per i DPI mancanti e per le aree interdette.
 
 ## Componenti
 
@@ -54,11 +54,11 @@ work-guardian-cps-dicita/
 └── README.md
 ```
 
-La documentazione specifica dei singoli componenti è contenuta nelle rispettive cartelle.
+Le cartelle `communication`, `vision` e `wearable` contengono un file `info.txt` che ne descrive il contenuto.
 
 ## Avvio rapido
 
-Per volare servono il drone DJI Tello EDU, che si collega alla stazione centrale tramite il proprio Wi-Fi, e un controller PS4. Lo smartwatch e il broker Mosquitto servono per il monitoraggio biometrico e per gli allarmi all'operatore.
+Per volare servono il drone DJI Tello EDU, che si collega alla stazione centrale tramite il proprio Wi-Fi, e un controller PS4. Lo smartwatch e il broker Mosquitto sono necessari per misurare i parametri biometrici dell'operatore e per avvisarlo degli allarmi.
 
 Clonare la repository e installare le dipendenze Python:
 
@@ -86,4 +86,4 @@ python drone/main.py
 
 ## Nota
 
-Work-Guardian è un **prototipo accademico** sviluppato a fini didattici e sperimentali e non costituisce un sistema di sicurezza certificato.
+Work-Guardian è un **prototipo accademico** sviluppato a fini didattici e sperimentali. Non è un sistema di sicurezza certificato.
