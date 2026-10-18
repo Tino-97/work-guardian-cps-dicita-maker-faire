@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/work-guardian-github.png" alt="Work-Guardian" width="100%">
+  <img src="assets/work_guardian_banner.png" alt="Work-Guardian" width="100%">
 </p>
 
 # Work-Guardian
