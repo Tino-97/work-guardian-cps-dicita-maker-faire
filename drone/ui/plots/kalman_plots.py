@@ -23,10 +23,10 @@ LOGGER = logging.getLogger(__name__)
 _SAVE_DPI = 300
 
 _FILENAMES = {
-    "trajectory_xy":   "kalman_traiettoria_grezza_e_filtrata.png",
-    "correction_norm": "kalman_correzione_del_filtro.png",
-    "yaw_time":        "kalman_orientamento_grezzo_e_filtrato.png",
-    "xy_time":         "kalman_posizione_grezza_e_filtrata.png",
+    "trajectory_xy":   "kalman_raw_and_filtered_trajectory.png",
+    "correction_norm": "kalman_filter_correction.png",
+    "yaw_time":        "kalman_raw_and_filtered_yaw.png",
+    "xy_time":         "kalman_raw_and_filtered_position.png",
 }
 
 

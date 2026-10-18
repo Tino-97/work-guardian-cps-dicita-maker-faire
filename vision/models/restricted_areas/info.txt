@@ -1,11 +1,11 @@
-Aree_Interdette
+restricted_areas
 
 Il modello rileva i rettangoli rossi utilizzati per delimitare a pavimento le
 aree interdette. È addestrato su una sola classe, Red Rectangle.
 
 Durante le soste di supervisione, le rilevazioni prodotte da questo modello
 vengono combinate con quelle delle persone fornite dal modello
-Caduta_delle_Persone per verificare l'eventuale ingresso in un'area interdetta.
+person_fall per verificare l'eventuale ingresso in un'area interdetta.
 Il sistema di volo utilizza i pesi contenuti in weights/best.pt.
 
 Addestramento
@@ -19,7 +19,7 @@ Configurazione principale:
     model = YOLO('yolo26s.pt')
     model.train(
         data='vision/training/trainer/datasets/verRedRect_Lab/data.yaml',
-        name='Aree_Interdette',
+        name='restricted_areas',
         project='vision/models',
         epochs=30,
         patience=10,

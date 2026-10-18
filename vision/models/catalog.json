@@ -1,13 +1,13 @@
 {
   "roles": {
-    "safety_net": "Protezioni_Collettive",
-    "person_fall": "Caduta_delle_Persone",
-    "restricted_area": "Aree_Interdette",
-    "dpi": "Protezioni_Individuali"
+    "safety_net": "collective_protection",
+    "person_fall": "person_fall",
+    "restricted_area": "restricted_areas",
+    "dpi": "personal_protection"
   },
   "models": [
     {
-      "weights": "Protezioni_Individuali/weights/best.pt",
+      "weights": "personal_protection/weights/best.pt",
       "color": [64, 64, 255],
       "label": "Protezioni individuali",
       "classes": {
@@ -22,7 +22,7 @@
       }
     },
     {
-      "weights": "Protezioni_Collettive/weights/best.pt",
+      "weights": "collective_protection/weights/best.pt",
       "color": [70, 224, 90],
       "label": "Protezioni collettive",
       "classes": {
@@ -30,7 +30,7 @@
       }
     },
     {
-      "weights": "Caduta_delle_Persone/weights/best.pt",
+      "weights": "person_fall/weights/best.pt",
       "color": [255, 170, 56],
       "label": "Caduta delle persone",
       "classes": {
@@ -39,7 +39,7 @@
       }
     },
     {
-      "weights": "Aree_Interdette/weights/best.pt",
+      "weights": "restricted_areas/weights/best.pt",
       "color": [0, 196, 255],
       "label": "Aree interdette",
       "classes": {

@@ -29,22 +29,29 @@ def collect_run_parameters(logger, app_config, *, path_name: Optional[str] = Non
     def _n(value, decimals=3):
         return fmt_num_it(float(value), decimals)
 
-    fusione = (
-        f"media pesata (esponente {_n(cp.fusion_distance_weight_exponent, 1)})"
-        if cp.fusion_mode == "weighted_average" else str(cp.fusion_mode)
-    )
+    if cp.fusion_mode == "weighted_average":
+        fusione = "tutti, contando di più quelli vicini"
+    elif cp.fusion_mode == "best_tag":
+        fusione = "solo il più affidabile"
+    else:
+        fusione = str(cp.fusion_mode)
     priorita_z = (
-        f"ingresso {_n(ap.z_priority_enter_m, 2)} m / uscita {_n(ap.z_priority_exit_m, 2)} m"
+        f"si ferma oltre {_n(ap.z_priority_enter_m, 2)} m di scarto, "
+        f"riparte sotto {_n(ap.z_priority_exit_m, 2)} m"
         if ap.z_priority_enabled else "disattivata"
     )
     timeout_wp = (
         f"{_n(ap.waypoint_timeout_sec, 0)} s" if ap.waypoint_timeout_enabled else "disattivato"
     )
     gate = (
-        f"{_n(pf.outlier_gate_threshold, 1)} (max {pf.outlier_gate_max_consecutive} consecutivi)"
+        f"soglia {_n(pf.outlier_gate_threshold, 1)}, al massimo "
+        f"{pf.outlier_gate_max_consecutive} scarti di fila"
         if pf.outlier_gate_enabled else "disattivato"
     )
-    camera = f"calibrata (fx≈{cp.camera_matrix[0][0]:.0f}, fy≈{cp.camera_matrix[1][1]:.0f} px)"
+    camera = (
+        f"calibrata (lunghezza focale {cp.camera_matrix[0][0]:.0f} × "
+        f"{cp.camera_matrix[1][1]:.0f} pixel)"
+    )
     # Con None la localizzazione usa i tag a qualunque distanza.
     distanza_tag = (
         "nessun limite" if cp.max_tag_distance_m is None else _n(cp.max_tag_distance_m, 1)
@@ -53,40 +60,40 @@ def collect_run_parameters(logger, app_config, *, path_name: Optional[str] = Non
     return [
         ("Missione", [
             ("Percorso", path_name if path_name else "—"),
-            ("Waypoint percorsi (distinti)", str(n_waypoints)),
+            ("Numero di waypoint", str(n_waypoints)),
             ("Atterraggio automatico a fine missione", "Sì" if ap.auto_land_on_finish else "No"),
         ]),
-        ("Controllo (autopilota proporzionale)", [
-            ("Guadagno proporzionale orizzontale (kp XY)", _n(ap.kp_xy, 1)),
-            ("Guadagno proporzionale di quota (kp Z)", _n(ap.kp_z, 1)),
-            ("Guadagno proporzionale di orientamento (kp yaw)", _n(ap.kp_yaw, 1)),
-            ("Saturazione comando orizzontale [canale RC]", str(ap.max_xy_speed)),
-            ("Saturazione comando di quota [canale RC]", str(ap.max_z_speed)),
-            ("Saturazione comando di rotazione [canale RC]", str(ap.max_yaw_speed)),
-            ("Tolleranza orizzontale XY [m]", _n(xy_tol)),
-            ("Tolleranza di quota Z [m]", _n(z_tol)),
-            ("Tolleranza di orientamento yaw [°]", _n(yaw_tol, 1)),
-            ("Priorità di quota (isteresi)", priorita_z),
-            ("Timeout posa [s]", _n(ap.pose_timeout_sec, 1)),
-            ("Timeout waypoint", timeout_wp),
+        ("Guida automatica", [
+            ("Reattività negli spostamenti", _n(ap.kp_xy, 1)),
+            ("Reattività in salita e discesa", _n(ap.kp_z, 1)),
+            ("Reattività nella rotazione", _n(ap.kp_yaw, 1)),
+            ("Limite comando avanti/laterale [0–100]", str(ap.max_xy_speed)),
+            ("Limite comando verticale [0–100]", str(ap.max_z_speed)),
+            ("Limite comando di rotazione [0–100]", str(ap.max_yaw_speed)),
+            ("Margine di distanza dal waypoint [m]", _n(xy_tol)),
+            ("Margine di altezza [m]", _n(z_tol)),
+            ("Margine di direzione [°]", _n(yaw_tol, 1)),
+            ("Correzione dell'altezza da fermo", priorita_z),
+            ("Attesa se la posizione si perde [s]", _n(ap.pose_timeout_sec, 1)),
+            ("Tempo massimo per ogni waypoint", timeout_wp),
         ]),
-        ("Filtro di Kalman (posizione)", [
-            ("Rumore di processo (process noise)", _n(pf.process_noise, 1)),
-            ("Rumore di misura (measurement noise)", _n(pf.measurement_noise, 2)),
-            ("Gate anti-outlier (soglia)", gate),
-            ("Filtro sull'orientamento (yaw)", "attivo" if pf.yaw_filter_enabled else "disattivo"),
+        ("Correzione della posizione (filtro di Kalman)", [
+            ("Reattività del filtro (rumore di processo)", _n(pf.process_noise, 1)),
+            ("Incertezza attribuita alla misura [m]", _n(pf.measurement_noise, 2)),
+            ("Gestione delle misure anomale (outlier)", gate),
+            ("Filtro applicato anche alla direzione", "attivo" if pf.yaw_filter_enabled else "disattivo"),
         ]),
-        ("Localizzazione (AprilTag)", [
-            ("Famiglia dei tag", str(cp.tag_family)),
-            ("Dimensione del tag [m]", _n(cp.tag_size_m, 2)),
-            ("Modalità di fusione dei tag", fusione),
-            ("Distanza massima del tag [m]", distanza_tag),
-            ("Camera", camera),
+        ("Posizione dai marker (AprilTag)", [
+            ("Modello dei marker", str(cp.tag_family)),
+            ("Dimensione dei marker [m]", _n(cp.tag_size_m, 2)),
+            ("Metodo di fusione dei marker", fusione),
+            ("Distanza massima dei marker [m]", distanza_tag),
+            ("Calibrazione della telecamera", camera),
         ]),
         ("Sicurezza batteria", [
             ("Rientro alla base [%]", str(app_config.battery_rth_pct)),
             ("Avviso batteria [%]", str(app_config.battery_warning_pct)),
-            ("Atterraggio critico [%]", str(app_config.battery_critical_pct)),
+            ("Atterraggio immediato [%]", str(app_config.battery_critical_pct)),
         ]),
     ]
 
@@ -96,6 +103,10 @@ def _build_workbook(logger, parameters: Optional[list[tuple[str, list[tuple[str,
     comp = list(logger.comparison_entries)
 
     wb = Workbook()
+    wb.properties.creator = "Work-Guardian"
+    wb.properties.title = "Report sessione di volo"
+    wb.properties.subject = "Dati e riepilogo della sessione di volo"
+    wb.properties.description = "Report Work-Guardian con riepilogo, parametri, dati autopilota, confronto Kalman e legenda."
     summary_ws = wb.active
     summary_ws.title = "Riepilogo"
     write_summary_sheet(summary_ws, logger)
@@ -111,6 +122,7 @@ def _build_workbook(logger, parameters: Optional[list[tuple[str, list[tuple[str,
 
     write_legend_sheet(
         wb.create_sheet("Legenda"),
+        include_parameters=bool(parameters),
         include_autopilot=bool(auto),
         include_kalman=bool(comp),
     )

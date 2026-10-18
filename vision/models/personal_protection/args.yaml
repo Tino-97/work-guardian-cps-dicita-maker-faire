@@ -1,10 +1,10 @@
 task: detect
 mode: train
-model: yolo26s.pt
-data: vision/training/trainer/datasets/verWhiteNetsFull_Lab_Patch_Again_Tables/data.yaml
-epochs: 50
+model: vision/models/personal_protection/weights/last.pt
+data: vision/training/trainer/datasets/verPPE_original_clean/data.yaml
+epochs: 300
 time: null
-patience: 20
+patience: 50
 batch: 16
 imgsz: 640
 save: true
@@ -13,7 +13,7 @@ cache: false
 device: '0'
 workers: 8
 project: vision/models
-name: Protezioni_Collettive
+name: personal_protection
 exist_ok: false
 pretrained: true
 optimizer: auto
@@ -24,7 +24,7 @@ single_cls: false
 rect: false
 cos_lr: false
 close_mosaic: 0
-resume: false
+resume: vision/models/personal_protection/weights/last.pt
 amp: true
 fraction: 1.0
 profile: false
@@ -77,7 +77,7 @@ momentum: 0.937
 weight_decay: 0.0005
 warmup_epochs: 3.0
 warmup_momentum: 0.8
-warmup_bias_lr: 0.1
+warmup_bias_lr: 0.0
 box: 7.5
 cls: 0.5
 dfl: 1.5
@@ -106,4 +106,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: vision/models/Protezioni_Collettive
+save_dir: vision/models/personal_protection

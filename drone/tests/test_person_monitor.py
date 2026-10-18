@@ -9,8 +9,8 @@ from drone.surveillance.person_monitor import PersonMonitor, _box_min_distance
 from common_doubles import FakeClock
 
 
-_FALL_MODEL = "Caduta_delle_Persone"
-_RECT_MODEL = "Aree_Interdette"
+_FALL_MODEL = "person_fall"
+_RECT_MODEL = "restricted_areas"
 
 _PERSON = (100, 100, 140, 140)
 _RECT_OVERLAP = (130, 110, 200, 150)

@@ -138,7 +138,7 @@ def main():
     pygame.joystick.init()
 
     screen = pygame.display.set_mode((760, 220))
-    pygame.display.set_caption("WORK GUARDIAN - Diagnostica del controller")
+    pygame.display.set_caption("WORK-GUARDIAN - Diagnostica del controller")
 
     if pygame.joystick.get_count() == 0:
         print("Nessun controller rilevato.")

@@ -35,10 +35,10 @@ def test_i_quattro_grafici_del_filtro_nascono_tutti():
         nomi = {p.name for p in Path(d).glob("*.png")}
     assert len(salvati) == 4
     assert nomi == {
-        "kalman_traiettoria_grezza_e_filtrata.png",
-        "kalman_correzione_del_filtro.png",
-        "kalman_orientamento_grezzo_e_filtrato.png",
-        "kalman_posizione_grezza_e_filtrata.png",
+        "kalman_raw_and_filtered_trajectory.png",
+        "kalman_filter_correction.png",
+        "kalman_raw_and_filtered_yaw.png",
+        "kalman_raw_and_filtered_position.png",
     }
 
 

@@ -134,7 +134,7 @@ class _Logger:
 
 
 class _SafetyNetMonitor:
-    def __init__(self, registro, verdetto=None, *, nome="Protezioni_Collettive"):
+    def __init__(self, registro, verdetto=None, *, nome="collective_protection"):
         self._registro = registro
         self._verdetto = verdetto
         self.safety_net_model_name = nome
@@ -468,8 +468,8 @@ def test_senza_verdetto_non_si_dice_niente():
 
 
 def test_il_monitor_reti_sa_se_il_modello_ha_visto_la_rete():
-    monitor = _SafetyNetMonitor(_Registro(), None, nome="Protezioni_Collettive")
-    banco = _Banco(dict(_AVANZA), safety_net=monitor, modelli=("Protezioni_Collettive",), tag=(7,))
+    monitor = _SafetyNetMonitor(_Registro(), None, nome="collective_protection")
+    banco = _Banco(dict(_AVANZA), safety_net=monitor, modelli=("collective_protection",), tag=(7,))
 
     _esegui_autonomia(banco)
 
@@ -479,8 +479,8 @@ def test_il_monitor_reti_sa_se_il_modello_ha_visto_la_rete():
 
 
 def test_il_monitor_reti_non_confonde_un_altro_modello():
-    monitor = _SafetyNetMonitor(_Registro(), None, nome="Protezioni_Collettive")
-    banco = _Banco(dict(_AVANZA), safety_net=monitor, modelli=("Aree_Interdette",))
+    monitor = _SafetyNetMonitor(_Registro(), None, nome="collective_protection")
+    banco = _Banco(dict(_AVANZA), safety_net=monitor, modelli=("restricted_areas",))
 
     _esegui_autonomia(banco)
 
@@ -491,7 +491,7 @@ def test_la_sorveglianza_delle_persone_e_attiva_solo_in_sosta():
     banco = _Banco(
         None,
         ultimo_comando={"supervision_stop_active": True},
-        detections=[{"name": "Caduta_delle_Persone", "detections": []}],
+        detections=[{"name": "person_fall", "detections": []}],
     )
     monitor = _Monitor(banco.registro)
 

@@ -47,12 +47,12 @@ def test_i_sei_grafici_dell_autopilota_nascono_tutti():
         nomi = {p.name for p in Path(d).glob("*.png")}
     assert len(salvati) == 6
     assert nomi == {
-        "autopilota_traiettoria_percorsa.png",
-        "autopilota_distanza_dal_waypoint.png",
-        "autopilota_comandi_rc.png",
-        "autopilota_errore_posizione_xy.png",
-        "autopilota_errore_quota.png",
-        "autopilota_errore_orientamento.png",
+        "autopilot_flown_trajectory.png",
+        "autopilot_waypoint_distance.png",
+        "autopilot_rc_commands.png",
+        "autopilot_xy_position_error.png",
+        "autopilot_altitude_error.png",
+        "autopilot_yaw_error.png",
     }
 
 

@@ -109,7 +109,7 @@ def test_la_sessione_nasce_nella_cartella_data_al_logger():
 
         assert sessione is not None
         assert sessione.parent == Path(d)
-        assert sessione.name.startswith("sessione_volo_")
+        assert sessione.name.startswith("flight_session_")
         assert any(sessione.iterdir())
 
 

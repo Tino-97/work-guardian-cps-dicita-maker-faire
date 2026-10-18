@@ -29,7 +29,7 @@ class BiometricDataLogger:
     # thread di paho, l'esportazione dal thread principale: per questo ogni
     # accesso passa dal lock.
 
-    SESSION_PREFIX = "sessione_biometrica"
+    SESSION_PREFIX = "biometric_session"
 
     def __init__(self, max_samples: Optional[int] = None):
         self._max_samples = None if max_samples is None else max(1, int(max_samples))
@@ -109,9 +109,9 @@ class BiometricDataLogger:
         from drone.ui.plots import flight_plots
         return flight_plots.save_biometric_plots(self, output_dir)
 
-    EXCEL_FILENAME = "dati_biometrici.xlsx"
+    EXCEL_FILENAME = "biometric_data.xlsx"
 
-    TEXT_FILENAME = "biometria_log_orologio.txt"
+    TEXT_FILENAME = "biometric_watch_log.txt"
 
     @staticmethod
     def _app_config(app_config: Any):

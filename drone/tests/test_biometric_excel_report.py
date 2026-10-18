@@ -71,7 +71,7 @@ def test_the_watch_sheet_marks_the_samples_out_of_the_alarm_thresholds():
     ws = _workbook(logger_con_sessione())["Orologio"]
     headers = _headers(ws)
     fuori = [
-        ws.cell(r, headers.index("Battito fuori soglia") + 1).value
+        ws.cell(r, headers.index("Battito fuori dai limiti") + 1).value
         for r in range(2, ws.max_row + 1)
     ]
     # i campioni in allarme del campione di prova stanno a 132 bpm, oltre la
@@ -92,7 +92,7 @@ def test_the_watch_sheet_judges_the_thresholds_like_the_firmware():
         )
     ws = _workbook(log)["Orologio"]
     headers = _headers(ws)
-    colonna = headers.index("Battito fuori soglia") + 1
+    colonna = headers.index("Battito fuori dai limiti") + 1
     # 120,4 bpm l'orologio li confronta come 120, dentro la soglia; 120,6 come 121
     assert [ws.cell(r, colonna).value for r in (2, 3)] == ["No", "Sì"]
 
@@ -132,7 +132,7 @@ def test_the_alarm_sheet_has_no_watch_column():
         return
     wb = _workbook(logger_con_sessione())
     assert _headers(wb["Allarmi"]) == [
-        "Orario", "Tempo dall'avvio [s]", "Battito [bpm]", "SpO2 [%]", "Causa",
+        "Orario", "Tempo dall'avvio [s]", "Battito [bpm]", "Ossigeno [%]", "Causa",
     ]
 
 
@@ -152,6 +152,46 @@ def test_the_columns_are_wide_enough_for_their_headers():
             )
 
 
+def _legend_entries(wb) -> set:
+    ws = wb["Legenda"]
+    return {
+        ws.cell(r, 1).value for r in range(1, ws.max_row + 1)
+        if ws.cell(r, 2).value is not None
+    }
+
+
+def test_every_column_is_explained_on_its_header():
+    if not _openpyxl_available():
+        return
+    wb = _workbook(logger_con_sessione())
+    for sheet in ("Orologio", "Allarmi"):
+        ws = wb[sheet]
+        for c in range(1, ws.max_column + 1):
+            cell = ws.cell(1, c)
+            assert cell.comment is not None and cell.comment.text.strip(), (
+                f"{sheet}: colonna '{cell.value}' senza spiegazione"
+            )
+
+
+def test_the_legend_explains_every_parameter_and_watch_state():
+    if not _openpyxl_available():
+        return
+    from drone.data.biometric_report_stats import STATE_LABELS
+
+    wb = _workbook(logger_con_sessione())
+    voci = _legend_entries(wb)
+    ws = wb["Parametri"]
+    etichette = [
+        ws.cell(r, 1).value for r in range(1, ws.max_row + 1)
+        if ws.cell(r, 2).value is not None
+    ]
+    assert etichette
+    for etichetta in etichette:
+        assert etichetta in voci, f"parametro '{etichetta}' assente dalla legenda"
+    for stato in STATE_LABELS.values():
+        assert stato in voci, f"stato '{stato}' assente dalla legenda"
+
+
 def test_the_parameters_sheet_reports_the_firmware_thresholds():
     if not _openpyxl_available():
         return
@@ -160,9 +200,9 @@ def test_the_parameters_sheet_reports_the_firmware_thresholds():
         ws.cell(r, 1).value: ws.cell(r, 2).value for r in range(1, ws.max_row + 1)
     }
     soglie = _soglie()
-    assert valori["Soglia minima di ingresso [bpm]"] == str(soglie.bpm_min_in)
-    assert valori["Soglia massima di ingresso [bpm]"] == str(soglie.bpm_max_in)
-    assert valori["Soglia di rientro [%]"] == str(soglie.spo2_min_out)
+    assert valori["Allarme se il battito scende sotto [bpm]"] == str(soglie.bpm_min_in)
+    assert valori["Allarme se il battito sale sopra [bpm]"] == str(soglie.bpm_max_in)
+    assert valori["Fine allarme quando l'ossigeno risale fino a [%]"] == str(soglie.spo2_min_out)
 
 
 def test_the_summary_counts_the_telemetry_gap():
@@ -173,12 +213,12 @@ def test_the_summary_counts_the_telemetry_gap():
     valori = {
         ws.cell(r, 1).value: ws.cell(r, 2).value for r in range(1, ws.max_row + 1)
     }
-    assert valori["Campioni ricevuti"] == 40
-    assert valori["Interruzioni della telemetria"] == 1
+    assert valori["Dati ricevuti"] == 40
+    assert valori["Numero di pause senza dati"] == 1
     # i campioni coprono venti secondi: la sessione dura di più per il silenzio
-    assert abs(valori["Telemetria effettivamente coperta [s]"] - 20.0) < 1e-9
+    assert abs(valori["Tempo con i dati arrivati [s]"] - 20.0) < 1e-9
     assert valori["Durata della sessione [s]"] > 20.0
-    assert abs(valori["Frequenza di campionamento [Hz]"] - 2.0) < 1e-9
+    assert abs(valori["Dati al secondo"] - 2.0) < 1e-9
 
 
 def test_export_session_writes_the_workbook():

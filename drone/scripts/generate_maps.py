@@ -801,20 +801,20 @@ def genera_mappe(output_dir, show, *, waypoints, supervision_1based, yaw_offset,
 
     if waypoints:
         _render(
-            output_dir / "mappa_percorso_waypoint.png", show,
+            output_dir / "map_waypoint_path.png", show,
             title="Percorso dei waypoint",
             draw_waypoints=True, draw_markers=False, show_coords=True, show_yaw=False,
             **common,
         )
     _render(
-        output_dir / "mappa_marker_apriltag.png", show,
+        output_dir / "map_apriltag_markers.png", show,
         title="Marker AprilTag di riferimento",
         draw_waypoints=False, draw_markers=True, show_coords=True, show_yaw=False,
         **common,
     )
     if waypoints:
         _render(
-            output_dir / "mappa_percorso_e_marker.png", show,
+            output_dir / "map_path_and_markers.png", show,
             title="Percorso e marker AprilTag",
             draw_waypoints=True, draw_markers=True, show_coords=False, show_yaw=True,
             **common,

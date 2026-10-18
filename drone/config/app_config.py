@@ -17,6 +17,7 @@ from drone.loaders.yolo_models_loader import (
     load_models_registry,
 )
 from drone.ui.appearance import (
+    CONTROLLER_WINDOW_TITLE,
     PROJECT_TITLE,
     SCENARIO_WINDOW_TITLE,
     VIDEO_WINDOW_TITLE,
@@ -262,6 +263,7 @@ class AppConfig:
     window_title: str = WINDOW_TITLE
     scenario_window_title: str = SCENARIO_WINDOW_TITLE
     video_window_title: str = VIDEO_WINDOW_TITLE
+    controller_window_title: str = CONTROLLER_WINDOW_TITLE
     project_title: str = PROJECT_TITLE
 
     frame_from_controller_is_rgb: bool = True

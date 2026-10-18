@@ -32,12 +32,12 @@ LOGGER = logging.getLogger(__name__)
 _SAVE_DPI = 300
 
 _FILENAMES = {
-    "trajectory_xy": "autopilota_traiettoria_percorsa.png",
-    "distance_time": "autopilota_distanza_dal_waypoint.png",
-    "rc_commands":   "autopilota_comandi_rc.png",
-    "xy_error":      "autopilota_errore_posizione_xy.png",
-    "z_error":       "autopilota_errore_quota.png",
-    "yaw_error":     "autopilota_errore_orientamento.png",
+    "trajectory_xy": "autopilot_flown_trajectory.png",
+    "distance_time": "autopilot_waypoint_distance.png",
+    "rc_commands":   "autopilot_rc_commands.png",
+    "xy_error":      "autopilot_xy_position_error.png",
+    "z_error":       "autopilot_altitude_error.png",
+    "yaw_error":     "autopilot_yaw_error.png",
 }
 
 

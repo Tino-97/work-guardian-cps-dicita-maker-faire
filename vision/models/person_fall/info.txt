@@ -1,10 +1,10 @@
-Caduta_delle_Persone
+person_fall
 
 Il modello rileva persone e situazioni di caduta attraverso due classi: Person
 e Fall.
 
 Durante le soste di supervisione, le rilevazioni della classe Person vengono
-utilizzate insieme a quelle del modello Aree_Interdette per verificare
+utilizzate insieme a quelle del modello restricted_areas per verificare
 l'eventuale ingresso di una persona in un'area vietata. Le rilevazioni della
 classe Fall vengono invece utilizzate per generare gli allarmi relativi a
 possibili cadute. Il sistema di volo utilizza i pesi contenuti in
@@ -21,7 +21,7 @@ Configurazione principale:
     model = YOLO('yolo26s.pt')
     model.train(
         data='vision/training/trainer/datasets/ver_DcEFJ1N/data.yaml',
-        name='Caduta_delle_Persone',
+        name='person_fall',
         project='vision/models',
         epochs=80,
         patience=20,

@@ -46,6 +46,7 @@ def main():
 
             setup_video_window(subsystems.dashboard)
 
+            pygame.display.set_caption(APP_CONFIG.controller_window_title)
             pygame.display.iconify()
 
             mark_runtime_started()

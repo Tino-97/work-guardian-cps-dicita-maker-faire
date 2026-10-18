@@ -861,8 +861,8 @@ def test_nessun_modello_viene_chiesto_due_volte():
 
 def test_gli_scenari_del_progetto_chiedono_i_modelli_attesi():
     percorsi = {p.source.stem: p for p in load_waypoint_paths(APP_CONFIG.waypoint_paths_dir)}
-    collettiva = percorsi.get("1_verifica_sicurezza_collettiva")
-    operatore = percorsi.get("2_verifica_sicurezza_operatore")
+    collettiva = percorsi.get("1_collective_safety_check")
+    operatore = percorsi.get("2_operator_safety_check")
     if collettiva is not None:
         assert required_model_names(collettiva) == (APP_CONFIG.safety_net_model_name,)
     if operatore is not None:

@@ -9,7 +9,7 @@ from drone.surveillance.dpi_monitor import DpiMonitor, dpi_item_names
 from common_doubles import FakeClock
 
 
-_DPI_MODEL = "Protezioni_Individuali"
+_DPI_MODEL = "personal_protection"
 _BBOX = (10, 10, 60, 120)
 
 
@@ -90,7 +90,7 @@ def test_label_case_insensitive():
 
 def test_wrong_model_ignored():
     m = _monitor()
-    snap = _snapshot("Without_Helmet", model="Caduta_delle_Persone")
+    snap = _snapshot("Without_Helmet", model="person_fall")
     assert m.update(detections_by_model=snap, supervision_active=True) == []
 
 

@@ -14,6 +14,7 @@ wearable/
 ├── info.txt
 ├── smartwatch/
 ├── schematics/
+├── case/
 └── biometric_sessions/
 
 1. smartwatch
@@ -70,12 +71,16 @@ Gli schemi descrivono:
 Lo schema elettrico rappresenta i collegamenti funzionali del circuito e non
 dipende dalla disposizione fisica dei componenti all'interno del dispositivo.
 
-smartwatch_scocca_3d.stl
+3. case
+
+Contiene il modello 3D della scocca dello smartwatch.
+
+smartwatch_case_3d.stl
 
 È il modello 3D della scocca dello smartwatch, in formato STL, utilizzato per
 realizzare il case tramite stampa 3D.
 
-3. biometric_sessions
+4. biometric_sessions
 
 Contiene le sessioni biometriche registrate durante le prove del sistema.
 

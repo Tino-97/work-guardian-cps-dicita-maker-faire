@@ -50,9 +50,9 @@ class PersonMonitor:
     def __init__(
         self,
         *,
-        fall_model_name: str = "Caduta_delle_Persone",
-        person_model_name: str = "Caduta_delle_Persone",
-        restricted_area_model_name: str = "Aree_Interdette",
+        fall_model_name: str = "person_fall",
+        person_model_name: str = "person_fall",
+        restricted_area_model_name: str = "restricted_areas",
         person_label: str = "Person",
         fall_label: str = "Fall",
         restricted_area_tolerance_px: Optional[float] = None,

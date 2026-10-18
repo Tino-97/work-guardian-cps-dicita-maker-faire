@@ -249,6 +249,7 @@ class _Banco:
                     "_Display",
                     (),
                     {
+                        "set_caption": staticmethod(lambda titolo: None),
                         "iconify": staticmethod(lambda: None),
                         "flip": staticmethod(lambda: self.registro.passi.append("flip")),
                     },

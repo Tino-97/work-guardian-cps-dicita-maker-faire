@@ -1,10 +1,10 @@
 task: detect
 mode: train
 model: yolo26s.pt
-data: vision/training/trainer/datasets/verRedRect_Lab/data.yaml
-epochs: 30
+data: vision/training/trainer/datasets/verWhiteNetsFull_Lab_Patch_Again_Tables/data.yaml
+epochs: 50
 time: null
-patience: 10
+patience: 20
 batch: 16
 imgsz: 640
 save: true
@@ -13,7 +13,7 @@ cache: false
 device: '0'
 workers: 8
 project: vision/models
-name: Aree_Interdette
+name: collective_protection
 exist_ok: false
 pretrained: true
 optimizer: auto
@@ -106,4 +106,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: vision/models/Aree_Interdette
+save_dir: vision/models/collective_protection

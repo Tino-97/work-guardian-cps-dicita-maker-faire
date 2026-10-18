@@ -22,10 +22,10 @@ def _catalogo(contenuto) -> str:
 
 
 DEFAULT = {
-    "safety_net": "Protezioni_Collettive",
-    "person_fall": "Caduta_delle_Persone",
-    "restricted_area": "Aree_Interdette",
-    "dpi": "Protezioni_Individuali",
+    "safety_net": "collective_protection",
+    "person_fall": "person_fall",
+    "restricted_area": "restricted_areas",
+    "dpi": "personal_protection",
 }
 
 

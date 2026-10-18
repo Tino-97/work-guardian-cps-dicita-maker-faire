@@ -34,7 +34,7 @@ def test_i_dati_dell_autopilota_non_tirano_dentro_i_grafici_del_filtro():
         return
     salvati, nomi = _nomi(logger_with_autopilot_data())
     assert len(salvati) == 6
-    assert all(n.startswith("autopilota_") for n in nomi)
+    assert all(n.startswith("autopilot_") for n in nomi)
 
 
 def test_i_dati_del_confronto_non_tirano_dentro_i_grafici_dell_autopilota():

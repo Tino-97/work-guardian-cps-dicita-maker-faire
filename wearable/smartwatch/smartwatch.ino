@@ -1,5 +1,5 @@
 /*
- * Work Guardian - Firmware smartwatch
+ * Work-Guardian - Firmware smartwatch
  * Arduino Nano ESP32 + MAX30100 + LCD 16x2
  *
  * Collegamenti principali:
@@ -540,7 +540,7 @@ void configureSensor() {
 void setup() {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("[AVVIO] Orologio Work Guardian");
+  Serial.println("[AVVIO] Orologio Work-Guardian");
 
   WiFi.mode(WIFI_STA);
 
@@ -560,7 +560,7 @@ void setup() {
   lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Work Guardian");
+  lcd.print("Work-Guardian");
   delay(1500);
   lcd.clear();
 

@@ -15,7 +15,7 @@ drone/flight_sessions/
 wearable/biometric_sessions/
 
 vision/training/trainer/datasets/*
-!vision/training/trainer/datasets/data.yaml.esempio
+!vision/training/trainer/datasets/data.yaml.example
 vision/training/dataset_prep/*/dataset/
 vision/training/dataset_prep/*/converted/
 vision/training/dataset_prep/*/split/

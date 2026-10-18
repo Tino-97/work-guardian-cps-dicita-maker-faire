@@ -147,7 +147,7 @@ _RIGA_LUNGA = (
 )
 _RIGA_CON_PERCORSO = (
     "10:06:19  ×  Si è verificato un errore imprevisto: "
-    "C:/Users/faiel/Desktop/WORKGUARDIAN_CPS/drone/flight_sessions/dati_volo.xlsx"
+    "C:/Users/faiel/Desktop/WORKGUARDIAN_CPS/drone/flight_sessions/flight_data.xlsx"
 )
 
 

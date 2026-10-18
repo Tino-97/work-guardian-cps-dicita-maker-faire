@@ -29,32 +29,32 @@ def collect_session_parameters(
     samples = logger.samples()
 
     telemetria = [
-        ("Cadenza attesa di pubblicazione", f"{fmt_num_it(NOMINAL_STEP_SEC, 1)} s"),
+        ("Intervallo nominale tra campioni", f"{fmt_num_it(NOMINAL_STEP_SEC, 1)} s"),
     ]
     if samples:
         telemetria.append(
-            ("Cadenza misurata nella sessione", f"{fmt_num_it(sample_step_sec(samples), 2)} s")
+            ("Intervallo tipico osservato tra campioni", f"{fmt_num_it(sample_step_sec(samples), 2)} s")
         )
-        telemetria.append(("Campioni ricevuti", str(len(samples))))
+        telemetria.append(("Campioni biometrici ricevuti", str(len(samples))))
     telemetria.append(
-        ("Silenzio oltre il quale si conta un buco", f"{fmt_num_it(MAX_GAP_SEC, 1)} s")
+        ("Soglia per rilevare un’interruzione", f"{fmt_num_it(MAX_GAP_SEC, 1)} s")
     )
     telemetria.append(
-        ("Broker MQTT", f"{app_config.mqtt_broker_ip}:{app_config.mqtt_broker_port}")
+        ("Broker MQTT di ricezione", f"{app_config.mqtt_broker_ip}:{app_config.mqtt_broker_port}")
     )
 
     return [
-        ("Soglie dell'allarme sul battito", [
-            ("Soglia minima di ingresso [bpm]", str(soglie.bpm_min_in)),
-            ("Soglia massima di ingresso [bpm]", str(soglie.bpm_max_in)),
-            ("Soglia minima di rientro [bpm]", str(soglie.bpm_min_out)),
-            ("Soglia massima di rientro [bpm]", str(soglie.bpm_max_out)),
+        ("Limiti del battito", [
+            ("Allarme se il battito scende sotto [bpm]", str(soglie.bpm_min_in)),
+            ("Allarme se il battito sale sopra [bpm]", str(soglie.bpm_max_in)),
+            ("Fine allarme quando il battito risale fino a [bpm]", str(soglie.bpm_min_out)),
+            ("Fine allarme quando il battito riscende fino a [bpm]", str(soglie.bpm_max_out)),
         ]),
-        ("Soglie dell'allarme sulla saturazione", [
-            ("Soglia di ingresso [%]", f"sotto {soglie.spo2_min_in}"),
-            ("Soglia di rientro [%]", str(soglie.spo2_min_out)),
+        ("Limiti della saturazione SpO₂", [
+            ("Allarme se la saturazione SpO₂ scende sotto [%]", str(soglie.spo2_min_in)),
+            ("Fine allarme quando la saturazione SpO₂ risale fino a [%]", str(soglie.spo2_min_out)),
         ]),
-        ("Telemetria", telemetria),
+        ("Telemetria smartwatch", telemetria),
     ]
 
 
@@ -68,6 +68,10 @@ def _build_workbook(
     clock = session_clock(samples, allarmi)
 
     wb = Workbook()
+    wb.properties.creator = "Work-Guardian"
+    wb.properties.title = "Report sessione biometrica"
+    wb.properties.subject = "Dati e riepilogo della sessione biometrica"
+    wb.properties.description = "Report Work-Guardian con riepilogo, parametri, dati smartwatch, allarmi e legenda."
     summary_ws = wb.active
     summary_ws.title = "Riepilogo"
     write_summary_sheet(summary_ws, logger, thresholds)
@@ -85,6 +89,7 @@ def _build_workbook(
 
     write_legend_sheet(
         wb.create_sheet("Legenda"),
+        include_parameters=bool(parameters),
         include_samples=bool(samples),
         include_alarms=bool(allarmi),
     )

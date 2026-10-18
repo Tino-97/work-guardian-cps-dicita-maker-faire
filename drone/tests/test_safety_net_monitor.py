@@ -176,7 +176,7 @@ def test_waypoints_without_tags_are_not_monitored():
 
 
 def test_safety_net_model_name_default_and_override():
-    assert _monitor().safety_net_model_name == "Protezioni_Collettive"
+    assert _monitor().safety_net_model_name == "collective_protection"
     assert SafetyNetMonitor(_SAFETY_NET_MAP, safety_net_model_name="Altro").safety_net_model_name == "Altro"
 
 

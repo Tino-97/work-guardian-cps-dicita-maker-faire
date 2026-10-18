@@ -145,7 +145,7 @@ def test_la_connessione_dell_orologio_cambia_colore():
 
 def test_project_title_is_centered_at_the_top():
     f = _frame()
-    draw_project_title(f, "WORK GUARDIAN")
+    draw_project_title(f, "WORK-GUARDIAN")
     colonne = np.where((f > 0).any(axis=2).any(axis=0))[0]
     centro = (int(colonne.min()) + int(colonne.max())) / 2.0
     assert abs(centro - f.shape[1] / 2.0) <= 4
@@ -156,7 +156,7 @@ def test_project_title_is_centered_at_the_top():
 def test_project_title_is_cyan_like_the_panel_borders():
     assert overlay._TITLE_COLOR == overlay._PANEL_EDGE
     f = np.full((120, 960, 3), 255, dtype=np.uint8)
-    draw_project_title(f, "WORK GUARDIAN")
+    draw_project_title(f, "WORK-GUARDIAN")
     azzurro = np.array(overlay._TITLE_COLOR[::-1], dtype=int)
     vicini = np.abs(f.astype(int) - azzurro).sum(axis=2) <= 12
     assert int(vicini.sum()) > 200

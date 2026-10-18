@@ -315,10 +315,10 @@ class FlightDataLogger:
             )
             return False
 
-    AUTOPILOT_TEXT_FILENAME = "autopilota_log_missione_apriltag.txt"
-    COMPARISON_TEXT_FILENAME = "kalman_confronto_pose_raw_filtrate.txt"
+    AUTOPILOT_TEXT_FILENAME = "autopilot_apriltag_mission_log.txt"
+    COMPARISON_TEXT_FILENAME = "kalman_raw_vs_filtered_poses.txt"
 
-    EXCEL_FILENAME = "dati_volo.xlsx"
+    EXCEL_FILENAME = "flight_data.xlsx"
 
     FILTER_DIVERGENCE_MARGIN_M = 0.10
 
@@ -406,7 +406,7 @@ class FlightDataLogger:
 
             output_root = Path(output_root)
 
-            session_name = time.strftime("sessione_volo_%d_%m_%Y_%H_%M_%S")
+            session_name = time.strftime("flight_session_%d_%m_%Y_%H_%M_%S")
             session_dir = output_root / session_name
             if session_dir.exists():
                 suffix = 2

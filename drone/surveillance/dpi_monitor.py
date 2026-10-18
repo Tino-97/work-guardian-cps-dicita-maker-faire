@@ -63,7 +63,7 @@ class DpiMonitor:
     def __init__(
         self,
         *,
-        dpi_model_name: str = "Protezioni_Individuali",
+        dpi_model_name: str = "personal_protection",
         required_items: Iterable[str] = (),
         alarm_after_sec: float = 0.0,
         clear_after_sec: float = 0.0,

@@ -66,18 +66,18 @@ def test_select_yolo_configs_empty_returns_nothing():
 
 
 def test_select_yolo_configs_filters_by_name():
-    sel = _select_yolo_configs(["Caduta_delle_Persone"])
-    assert [m.name for m in sel] == ["Caduta_delle_Persone"]
+    sel = _select_yolo_configs(["person_fall"])
+    assert [m.name for m in sel] == ["person_fall"]
 
 
 def test_select_yolo_configs_preserves_user_order():
-    sel = _select_yolo_configs(["Caduta_delle_Persone", "Protezioni_Individuali"])
-    assert [m.name for m in sel] == ["Caduta_delle_Persone", "Protezioni_Individuali"]
+    sel = _select_yolo_configs(["person_fall", "personal_protection"])
+    assert [m.name for m in sel] == ["person_fall", "personal_protection"]
 
 
 def test_select_yolo_configs_unknown_names_are_skipped():
-    sel = _select_yolo_configs(["Protezioni_Individuali", "Inesistente"])
-    assert [m.name for m in sel] == ["Protezioni_Individuali"]
+    sel = _select_yolo_configs(["personal_protection", "Inesistente"])
+    assert [m.name for m in sel] == ["personal_protection"]
 
 
 def _run_all() -> int:

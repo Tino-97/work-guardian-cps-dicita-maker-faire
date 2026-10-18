@@ -18,16 +18,16 @@ La cartella models contiene i modelli effettivamente disponibili al sistema.
 
 Sono presenti quattro modelli principali:
 
-- Aree_Interdette
+- restricted_areas
   Rileva le aree che devono essere considerate non accessibili o pericolose.
 
-- Caduta_delle_Persone
+- person_fall
   Rileva situazioni riconducibili alla caduta di una persona.
 
-- Protezioni_Collettive
+- collective_protection
   Rileva elementi di protezione collettiva presenti nell'ambiente di lavoro.
 
-- Protezioni_Individuali
+- personal_protection
   Rileva i dispositivi di protezione individuale e la loro eventuale assenza.
 
 Ogni cartella di modello contiene i pesi addestrati e i principali file che

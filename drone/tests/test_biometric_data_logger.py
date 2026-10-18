@@ -104,13 +104,13 @@ def test_la_sessione_finisce_in_una_cartella_con_data_e_ora():
         cartella = log.export_session(d)
         assert cartella is not None
         assert cartella.parent == Path(d)
-        assert cartella.name.startswith("sessione_biometrica_")
+        assert cartella.name.startswith("biometric_session_")
         nomi = {p.name for p in cartella.glob("*.png")}
     assert nomi == {
-        "biometria_battito_grezzo_e_filtrato.png",
-        "biometria_spo2_grezza_e_filtrata.png",
-        "biometria_andamento_battito.png",
-        "biometria_andamento_spo2.png",
+        "biometric_raw_and_filtered_heart_rate.png",
+        "biometric_raw_and_filtered_spo2.png",
+        "biometric_heart_rate_trend.png",
+        "biometric_spo2_trend.png",
     }
 
 

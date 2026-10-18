@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from drone.data.flight_data_logger import FlightDataLogger
 
-from flight_log_samples import logger_with_autopilot_data, logger_with_both
+from flight_log_samples import _WP, _cmd, _pose, logger_with_autopilot_data, logger_with_both
 
 
 def _openpyxl_available() -> bool:
@@ -35,8 +35,8 @@ def test_excel_has_expected_sheets_and_translations():
     assert wb.sheetnames == ["Riepilogo", "Autopilota", "Kalman", "Legenda"]
     ws = wb["Autopilota"]
     headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
-    assert "Stato del controllo" in headers
-    values = {ws.cell(r, headers.index("Stato del controllo") + 1).value
+    assert "Cosa sta facendo il drone" in headers
+    values = {ws.cell(r, headers.index("Cosa sta facendo il drone") + 1).value
               for r in range(2, ws.max_row + 1)}
     assert "Inseguimento waypoint" in values
     assert "tracking" not in values
@@ -86,7 +86,7 @@ def test_excel_parameters_sheet_from_config():
         for c in (1, 2)
     )
     assert "Percorso di prova" in testo
-    assert "kp XY" in testo
+    assert "Reattività negli spostamenti" in testo
 
 
 def test_excel_parameters_accept_no_tag_distance_limit():
@@ -99,7 +99,108 @@ def test_excel_parameters_accept_no_tag_distance_limit():
     )
     params = flight_excel_report.collect_run_parameters(FlightDataLogger(), config)
     voci = dict(voce for _gruppo, righe in params for voce in righe)
-    assert voci["Distanza massima del tag [m]"] == "nessun limite"
+    assert voci["Distanza massima dei marker [m]"] == "nessun limite"
+
+
+def _save_and_load(log, params=None):
+    from openpyxl import load_workbook
+    from drone.data import flight_excel_report
+
+    with tempfile.TemporaryDirectory() as d:
+        path = Path(d) / "test.xlsx"
+        flight_excel_report.save_session_workbook(log, path, params)
+        return load_workbook(path)
+
+
+def _legend_entries(wb) -> set:
+    ws = wb["Legenda"]
+    return {
+        ws.cell(r, 1).value for r in range(1, ws.max_row + 1)
+        if ws.cell(r, 2).value is not None
+    }
+
+
+def _column_values(ws, header: str) -> set:
+    headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
+    colonna = headers.index(header) + 1
+    return {ws.cell(r, colonna).value for r in range(2, ws.max_row + 1)}
+
+
+def test_excel_explains_every_column_on_its_header():
+    if not _openpyxl_available():
+        return
+    wb = _save_and_load(logger_with_both())
+    for sheet in ("Autopilota", "Kalman"):
+        ws = wb[sheet]
+        for c in range(1, ws.max_column + 1):
+            cell = ws.cell(1, c)
+            assert cell.comment is not None and cell.comment.text.strip(), (
+                f"{sheet}: colonna '{cell.value}' senza spiegazione"
+            )
+
+
+def test_excel_legend_explains_every_parameter():
+    if not _openpyxl_available():
+        return
+    from drone.config import APP_CONFIG
+    from drone.data import flight_excel_report
+
+    log = logger_with_autopilot_data()
+    params = flight_excel_report.collect_run_parameters(log, APP_CONFIG, path_name="Percorso di prova")
+    wb = _save_and_load(log, params)
+    voci = _legend_entries(wb)
+    ws = wb["Parametri"]
+    etichette = [
+        ws.cell(r, 1).value for r in range(1, ws.max_row + 1)
+        if ws.cell(r, 2).value is not None
+    ]
+    assert etichette
+    for etichetta in etichette:
+        assert etichetta in voci, f"parametro '{etichetta}' assente dalla legenda"
+
+
+# Tutti i motivi che l'autopilota può dare al comando e tutte le origini della
+# posa che la stima e il filtro possono indicare.
+_AUTOPILOT_REASONS = (
+    "tracking", "z_priority_tracking", "waypoint_reached", "waypoint_timeout",
+    "mission_finished", "pose_timeout", "pose_missing", "out_of_area",
+    "supervision_stop", "supervision_stop_started", "supervision_stop_completed",
+    "supervision_stop_tracking", "supervision_stop_z_priority_tracking",
+    "invalid_pose: dati mancanti", "invalid_pose_transient: dati mancanti",
+)
+_POSE_SOURCES = ("weighted_average", "best_tag")
+
+
+def test_excel_legend_explains_every_control_state_and_pose_source():
+    if not _openpyxl_available():
+        return
+    log = FlightDataLogger()
+    for i, reason in enumerate(_AUTOPILOT_REASONS):
+        source = _POSE_SOURCES[i % len(_POSE_SOURCES)]
+        filtrata = {**_pose(0.0, 0.0, 1.8, 0.0), "source": f"kalman({source})"}
+        log.log_autopilot_step(
+            pose_estimate=filtrata,
+            command=_cmd(reason=reason),
+            target=_WP(0.0, 1.0, 1.8, 0.0),
+            timestamp=1000.0 + 0.05 * i,
+        )
+        log.log_pose_pair(
+            raw_pose_estimate={**_pose(0.0, 0.0, 1.8, 0.0), "source": source},
+            filtered_pose_estimate=filtrata,
+            timestamp=1000.0 + 0.05 * i,
+        )
+    wb = _save_and_load(log)
+    voci = _legend_entries(wb)
+
+    stati = _column_values(wb["Autopilota"], "Cosa sta facendo il drone")
+    assert len(stati) == len(_AUTOPILOT_REASONS)
+    origini = (
+        _column_values(wb["Autopilota"], "Calcolo della posizione")
+        | _column_values(wb["Kalman"], "Calcolo della posizione misurata")
+        | _column_values(wb["Kalman"], "Calcolo della posizione corretta")
+    )
+    for valore in stati | origini:
+        assert valore in voci, f"valore '{valore}' assente dalla legenda"
 
 
 def test_export_session_creates_excel():

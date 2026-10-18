@@ -254,7 +254,7 @@ def main():
                 2,
             )
 
-            cv2.imshow("WORK GUARDIAN - Calibrazione della camera", display)
+            cv2.imshow("WORK-GUARDIAN - Calibrazione della camera", display)
 
             key = cv2.waitKey(1) & 0xFF
 

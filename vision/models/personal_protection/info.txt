@@ -1,4 +1,4 @@
-Protezioni_Individuali
+personal_protection
 
 Il modello rileva i dispositivi di protezione individuale (DPI) e la loro
 eventuale assenza. È addestrato su otto classi:
@@ -29,7 +29,7 @@ Configurazione principale dell'addestramento iniziale:
     model = YOLO('yolo26s.pt')
     model.train(
         data='vision/training/trainer/datasets/verPPE_original_clean/data.yaml',
-        name='Protezioni_Individuali',
+        name='personal_protection',
         project='vision/models',
         epochs=300,
         patience=50,
@@ -42,7 +42,7 @@ Configurazione principale dell'addestramento iniziale:
 
 Ripresa dell'addestramento:
 
-    model = YOLO('vision/models/Protezioni_Individuali/weights/last.pt')
+    model = YOLO('vision/models/personal_protection/weights/last.pt')
     model.train(resume=True)
 
 Le 300 epoche indicate rappresentano il totale dell'addestramento, includendo

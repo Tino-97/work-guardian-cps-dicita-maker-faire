@@ -69,18 +69,18 @@ def test_phase_record_rendered_as_titled_rule():
 
 
 def test_title_record_is_centered_above_a_rule():
-    out = ConsoleLogFormatter().format(_record(logging.INFO, "WORK GUARDIAN", title=True))
+    out = ConsoleLogFormatter().format(_record(logging.INFO, "WORK-GUARDIAN", title=True))
     riga_titolo, riga_linea = out.split("\n")
-    assert riga_titolo.strip() == "WORK GUARDIAN"
+    assert riga_titolo.strip() == "WORK-GUARDIAN"
     assert riga_titolo.startswith(" ")
     assert set(riga_linea) == {"-"}
 
 
 def test_log_title_goes_to_the_phase_logger():
-    recs = _collect_logs("drone.phase", lambda: co.log_title("WORK GUARDIAN"))
+    recs = _collect_logs("drone.phase", lambda: co.log_title("WORK-GUARDIAN"))
     assert len(recs) == 1
     assert recs[0].title is True
-    assert recs[0].getMessage() == "WORK GUARDIAN"
+    assert recs[0].getMessage() == "WORK-GUARDIAN"
 
 
 def test_print_step_goes_to_shell_not_stdout():

@@ -1,4 +1,4 @@
-Protezioni_Collettive
+collective_protection
 
 Il modello rileva le reti di sicurezza utilizzate come protezioni collettive
 all'interno del cantiere. È addestrato su una sola classe, Safety_Net.
@@ -20,7 +20,7 @@ Configurazione principale:
     model = YOLO('yolo26s.pt')
     model.train(
         data='vision/training/trainer/datasets/verWhiteNetsFull_Lab_Patch_Again_Tables/data.yaml',
-        name='Protezioni_Collettive',
+        name='collective_protection',
         project='vision/models',
         epochs=50,
         patience=20,

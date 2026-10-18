@@ -33,10 +33,10 @@ LOGGER = logging.getLogger(__name__)
 _SAVE_DPI = 300
 
 _FILENAMES = {
-    "hr_comparison":   "biometria_battito_grezzo_e_filtrato.png",
-    "spo2_comparison": "biometria_spo2_grezza_e_filtrata.png",
-    "hr_session":      "biometria_andamento_battito.png",
-    "spo2_session":    "biometria_andamento_spo2.png",
+    "hr_comparison":   "biometric_raw_and_filtered_heart_rate.png",
+    "spo2_comparison": "biometric_raw_and_filtered_spo2.png",
+    "hr_session":      "biometric_heart_rate_trend.png",
+    "spo2_session":    "biometric_spo2_trend.png",
 }
 
 # Il colore di ogni stato dell'automa del firmware; le etichette e l'ordine in

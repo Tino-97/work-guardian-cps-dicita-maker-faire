@@ -12,10 +12,10 @@ _CATALOG_RELATIVE = ("vision", "models", "catalog.json")
 
 _DEFAULT_COLOR = (0, 255, 0)
 
-_DEFAULT_SAFETY_NET_MODEL = "Protezioni_Collettive"
-_DEFAULT_PERSON_FALL_MODEL = "Caduta_delle_Persone"
-_DEFAULT_RESTRICTED_AREA_MODEL = "Aree_Interdette"
-_DEFAULT_DPI_MODEL = "Protezioni_Individuali"
+_DEFAULT_SAFETY_NET_MODEL = "collective_protection"
+_DEFAULT_PERSON_FALL_MODEL = "person_fall"
+_DEFAULT_RESTRICTED_AREA_MODEL = "restricted_areas"
+_DEFAULT_DPI_MODEL = "personal_protection"
 
 
 @dataclass(frozen=True)

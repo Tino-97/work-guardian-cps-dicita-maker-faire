@@ -10,7 +10,7 @@ class SafetyNetMonitor:
     def __init__(
         self,
         waypoint_tag_map: Mapping[int, Iterable[int]],
-        safety_net_model_name: str = "Protezioni_Collettive",
+        safety_net_model_name: str = "collective_protection",
         *,
         safety_net_confirm_sec: float = 0.0,
         time_source: Optional[Callable[[], float]] = None,

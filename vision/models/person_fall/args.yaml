@@ -13,7 +13,7 @@ cache: false
 device: '0'
 workers: 8
 project: vision/models
-name: Caduta_delle_Persone
+name: person_fall
 exist_ok: false
 pretrained: true
 optimizer: auto
@@ -106,4 +106,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: vision/models/Caduta_delle_Persone
+save_dir: vision/models/person_fall
