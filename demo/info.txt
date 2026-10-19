@@ -1,0 +1,202 @@
+demo
+
+Demo da banco di WORK-GUARDIAN per l'esposizione al pubblico (Maker Faire
+Rome). Mostra il riconoscimento del sistema senza far volare il drone: i
+modelli di vision/models analizzano il video della webcam o della camera del
+Tello appoggiato a terra, e la logica di sorveglianza del volo
+(drone/surveillance) decide gli allarmi. Gli allarmi compaiono nel log degli
+alert e arrivano all'orologio tramite MQTT, con gli stessi messaggi del drone.
+
+La demo non modifica nessun file del progetto: usa modelli, sorveglianza e
+grafica dell'interfaccia (drone/ui) così come sono e segue i nomi dei modelli
+indicati in vision/models/catalog.json.
+
+Struttura
+
+demo/
+├── main.py              avvio, comandi da tastiera, collegamento delle parti
+├── capture.py           webcam e camera del Tello, lette in thread separati
+├── vision.py            modelli YOLO, filtro sulle persone, AprilTag, allarmi
+├── screen.py            finestra nello stile dell'interfaccia di WORK-GUARDIAN
+├── network.py           broker MQTT, rete, messaggi all'orologio, fine missione
+├── prepara_pc.bat       prepara un PC come stazione centrale (doppio clic)
+├── prepara_pc.ps1       script eseguito da prepara_pc.bat
+├── avvia_demo.bat       avvia la demo (doppio clic)
+├── chiudi_missione.bat  chiude la missione rimasta attiva sull'orologio
+└── info.txt
+
+Webcam, drone e riconoscimento girano in thread separati dalla finestra: il
+video resta fluido anche quando il riconoscimento è più lento, e sopra il
+video si disegna l'ultimo risultato disponibile, come nell'interfaccia di volo.
+
+Preparare un PC
+
+Con il PC collegato a Internet e il cavo Ethernet collegato al router,
+estrarre tutto il progetto (non solo la cartella demo) e fare doppio clic su
+demo/prepara_pc.bat, confermando i permessi di amministratore. Lo script:
+
+1. installa Python 3.12, la versione di riferimento del progetto, se manca;
+2. installa le librerie di requirements.txt;
+3. con una scheda NVIDIA, installa PyTorch per la GPU;
+4. installa il broker Mosquitto e mette il suo servizio di Windows su avvio
+   manuale (ascolta solo il PC stesso: il broker lo avvia la demo);
+5. assegna alla scheda Ethernet l'indirizzo che l'orologio usa per il broker
+   (MQTT_BROKER_IP in wearable/smartwatch/network_config.h, oggi
+   192.168.1.2) e apre il firewall per broker, drone e Python;
+6. controlla che tutte le librerie si importino.
+
+La prima volta servono una decina di minuti, soprattutto per PyTorch. Quello
+che è già a posto viene saltato: si può rieseguire senza danni, per esempio
+dopo aver collegato il cavo. Così qualunque PC può fare da stazione centrale,
+uno alla volta: se l'indirizzo è già occupato lo script si ferma e lo dice.
+Per riportare il PC all'uso normale, da terminale:
+
+    demo\prepara_pc.bat ripristina
+
+Un PC preparato così funziona anche con il programma del drone
+(python drone/main.py), che usa il broker su 127.0.0.1.
+
+Avvio
+
+Doppio clic su demo/avvia_demo.bat, oppure dalla radice del progetto:
+
+    py -3.12 demo/main.py
+
+All'avvio compare la schermata iniziale dell'interfaccia di volo (Avanti per
+proseguire). Nel frattempo la demo carica i modelli e cerca la webcam: le
+prova tutte e usa quella che manda un'immagine vera, scartando quelle nere e
+le fotocamere virtuali con un'immagine ferma (OBS e simili restano escluse
+anche dal tasto C, se c'è una webcam vera). Se Mosquitto non è attivo lo
+avvia la demo, con communication/broker/mqtt_broker.conf, e lo chiude
+all'uscita.
+
+Drone
+
+La demo cerca sempre anche il Tello, in background: basta accenderlo e
+collegare il Wi-Fi del PC alla sua rete (TELLO-...), anche a demo già avviata;
+il cavo Ethernet resta sul router per l'orologio. Il drone non decolla. Il
+tasto W passa dalla webcam al drone e viceversa; il tasto C scorre le webcam
+e, dopo l'ultima, passa al drone. Ogni visuale ha i propri allarmi: quando si
+cambia visuale, quelli della visuale nascosta si spengono anche
+sull'orologio. Se il collegamento non riesce, la riga del drone dice perché.
+
+Il video del drone consuma batteria anche a motori spenti: è acceso solo
+mentre la visuale drone è sullo schermo. Sotto il 15% la riga del drone lo
+segnala. Allo stand conviene tenere batterie cariche di ricambio e spegnere il
+drone tra una dimostrazione e l'altra: fermo a terra si scalda, perché non ha
+il flusso d'aria del volo.
+
+Finestra
+
+Banner in alto; sotto, il video con i riconoscimenti e, a destra, "Stato
+orologio" (collegamento, battito e saturazione, in rosso fuori dalle soglie
+dell'orologio) e "Log degli alert", con gli stessi testi e simboli del volo.
+Sul video compare anche il banner rosso della rete mancante. Le misure sono
+riferite a uno schermo 1920x1080 e la grafica viene ridisegnata alla
+risoluzione reale della finestra: resta leggibile su qualunque monitor, a
+finestra intera o a schermo intero (tasto F). Il tasto H mostra il pannello
+"Stato demo" (sorgente, velocità, GPU o CPU, orologio, rete, broker, modelli e
+impostazioni), poi l'elenco dei comandi, poi di nuovo nessun pannello.
+
+Orologio e missione
+
+La demo pubblica l'avvio della missione come messaggio conservato dal broker:
+un orologio che si accende o si riavvia dopo la demo lo riceve subito. Alla
+chiusura pubblica la fine della missione e aspetta che arrivi al broker.
+
+L'orologio ricorda la missione anche dopo un riavvio. Se la demo o il
+programma del drone si chiudono senza mandare la fine missione (finestra del
+terminale chiusa, PC spento, orologio scollegato in quel momento), l'orologio
+resta in missione. Per chiuderla, con l'orologio acceso: doppio clic su
+demo/chiudi_missione.bat (oppure py -3.12 demo/main.py --chiudi-missione).
+Avvia il broker se serve, manda FINE_MISSIONE come il drone all'atterraggio e
+aspetta fino a due minuti che l'orologio confermi.
+
+Prestazioni
+
+- Area vietata e rete sono oggetti fermi: i loro modelli si rieseguono
+  qualche volta al secondo e nel frattempo vale l'ultimo risultato; DPI e
+  persone girano su ogni immagine.
+- Le AprilTag, sulle barriere ferme, si cercano cinque volte al secondo, e
+  solo se servono (corridoio acceso o modello delle reti acceso).
+- La finestra ridisegna solo il video e i pannelli cambiati.
+
+Parametri principali
+
+    --sorgente       auto       webcam automatica, indice (0, 1, ...) o file video
+    --drone          auto       indirizzo del Tello (auto: rete Wi-Fi del drone)
+    --no-drone                  non cercare il drone
+    --modelli        dpi,persone,aree
+                                modelli caricati all'avvio (anche reti)
+    --dpi            helmet,goggles,vest,shoes
+                                DPI richiesti, come lo scenario di verifica
+                                dell'operatore
+    --conf           0.5        soglia di confidenza
+    --imgsz          640        320 o 480 sui PC senza GPU
+    --persone        2          persone considerate
+    --altezza-min    0.25       altezza minima di una persona (frazione
+                                dell'immagine)
+    --attesa         2.0        secondi di conferma di un allarme
+    --rete-attesa    3.0        secondi senza rete, con i tag in vista, prima
+                                dell'allarme
+    --mqtt           auto       broker su questo PC, avviato se serve; oppure
+                                l'indirizzo di un altro broker
+    --no-mqtt                   demo senza orologio
+    --no-intro                  salta la schermata iniziale
+    --schermo-intero            parte a schermo intero
+    --chiudi-missione           chiude la missione rimasta attiva ed esce
+
+Le stesse opzioni si possono dare a avvia_demo.bat, per esempio
+avvia_demo.bat --no-drone.
+
+Comandi da tastiera
+
+    H        stato della demo, elenco dei comandi, nessun pannello
+    S        sorveglianza accesa/spenta
+    1 2 3 4  modelli DPI, persone, aree, reti (un modello non caricato
+             all'avvio viene caricato al momento)
+    + -      soglia di confidenza
+    P        persone considerate (1, 2, 3)
+    A        altezza minima di una persona
+    T        corridoio tra le AprilTag acceso/spento
+    R        ricalcola il corridoio (dopo aver spostato barriere o webcam)
+    mouse    trascinando si disegna una zona vietata; il tasto destro la
+             cancella
+    W        visuale webcam / drone
+    C        webcam successiva, dopo l'ultima il drone
+    M        missione dell'orologio avviata/ferma
+    F        schermo intero
+    Q / Esc  esci
+
+Ogni comando mostra una conferma in basso sul video: se non compare, il tasto
+non è arrivato alla finestra (cliccarci sopra una volta).
+
+Differenze rispetto al volo
+
+In uno stand ci sono molte persone nell'inquadratura. La demo considera solo
+le persone più grandi nell'immagine, cioè le più vicine (per default 2), solo
+quelle abbastanza alte e, se ci sono almeno due AprilTag in vista, solo quelle
+con i piedi tra le barriere. I DPI contano solo se cadono dentro di loro. Le
+altre persone restano disegnate in grigio e non generano allarmi.
+
+Con le barriere e la rete (modello reti, tasto 4), con i tag in vista e
+nessuna rete riconosciuta per qualche secondo compare "Rete di sicurezza
+mancante": basta staccare la rete per mostrarlo. Come in volo, questo allarme
+e la caduta non vanno all'orologio.
+
+Regolazione sul posto
+
+- Troppi allarmi: alzare la soglia (+), ridurre le persone (P) o alzare
+  l'altezza minima (A).
+- Nessun riconoscimento: abbassare la soglia (-) e verificare la luce.
+- Immagine a scatti: controllare nel pannello di stato (H) se l'analisi gira
+  su GPU o su CPU. Con una scheda NVIDIA e la scritta CPU, rieseguire
+  prepara_pc.bat. Sui PC senza GPU: avvia_demo.bat --imgsz 480 e meno modelli
+  accesi (il modello delle reti è il più pesante).
+- Rettangolo rosso a terra non riconosciuto: disegnare la zona vietata con il
+  mouse, funziona allo stesso modo.
+- L'orologio non reagisce: nel pannello di stato la riga "Rete" deve dire che
+  l'orologio può collegarsi e la riga "Orologio" deve indicare la missione
+  avviata (tasto M).
+- Drone che non si collega: il Wi-Fi del PC deve essere sulla rete TELLO-...;
+  se la riga del drone parla di firewall, rieseguire prepara_pc.bat.
